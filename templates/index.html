@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oblivio - Privasi Data Digital</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>Oblivio</h1>
+            <p>Lindungi privasi digital Anda dengan mengaburkan metadata dan menyembunyikan informasi sensitif</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="app-container">
+            <div class="tabs">
+                <button class="tab active" data-tab="embed">
+                    <i class="fas fa-lock"></i> Sembunyikan Pesan
+                </button>
+                <button class="tab" data-tab="extract">
+                    <i class="fas fa-unlock"></i> Ekstrak Pesan
+                </button>
+                <button class="tab" data-tab="metadata">
+                    <i class="fas fa-tags"></i> Kelola Metadata
+                </button>
+                <button class="tab" data-tab="about">
+                    <i class="fas fa-info-circle"></i> Tentang
+                </button>
+            </div>
+            
+            <div id="embed" class="tab-content active">
+                <h2>Sembunyikan Pesan dalam Media</h2>
+                <div class="stego-form">
+                    <div class="image-col">
+                        <div class="file-upload">
+                            <input type="file" id="embed-image" accept="image/png, image/jpeg, audio/*, video/*">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Pilih Media atau Seret ke Sini</p>
+                            <span>Format yang didukung: PNG, JPEG, MP3, MP4</span>
+                        </div>
+                        
+                        <div class="image-preview">
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <div class="data-col">
+                        <div class="data-card">
+                            <h3><i class="fas fa-comment-dots"></i> Pesan Rahasia</h3>
+                            <div class="input-group">
+                                <textarea id="secret-message" placeholder="Masukkan pesan rahasia yang ingin disembunyikan..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="data-card">
+                            <h3><i class="fas fa-shield-alt"></i> Keamanan Tambahan</h3>
+                            <div class="input-group">
+                                <label for="password">Password (opsional):</label>
+                                <input type="text" id="password" placeholder="Password untuk enkripsi tambahan">
+                            </div>
+                        </div>
+                        
+                        <div class="buttons-group">
+                            <button id="embed-button">
+                                <i class="fas fa-lock"></i> Sembunyikan Pesan
+                            </button>
+                            <button id="clear-embed" class="secondary-button">
+                                <i class="fas fa-eraser"></i> Bersihkan
+                            </button>
+                        </div>
+                        
+                        <div id="embed-progress" class="progress-container" style="display: none;">
+                            <p>Sedang memproses...</p>
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="embed-result" class="result-container" style="display: none;">
+                    <h3><i class="fas fa-check-circle"></i> Pesan Berhasil Disembunyikan!</h3>
+                    <p>Media dengan pesan tersembunyi sudah siap untuk diunduh.</p>
+                    <div class="image-preview">
+                        <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Preview">
+                    </div>
+                    <div class="buttons-group">
+                        <a href="#" id="download-image" class="download-link">
+                            <i class="fas fa-download"></i> Unduh Media
+                        </a>
+                        <button id="copy-image-btn" class="secondary-button">
+                            <i class="fas fa-copy"></i> Salin Media
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="extract" class="tab-content">
+                <h2>Ekstrak Pesan dari Media</h2>
+                <div class="stego-form">
+                    <div class="image-col">
+                        <div class="file-upload">
+                            <input type="file" id="extract-image" accept="image/png, image/jpeg, audio/*, video/*">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Pilih Media Atau Seret ke Sini</p>
+                            <span>Pilih media yang berisi pesan rahasia</span>
+                        </div>
+                        
+                        <div class="image-preview">
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <div class="data-col">
+                        <div class="data-card">
+                            <h3><i class="fas fa-key"></i> Dekripsi Pesan</h3>
+                            <div class="input-group">
+                                <label for="extract-password">Password (jika diperlukan):</label>
+                                <input type="text" id="extract-password" placeholder="Masukkan password jika pesan dienkripsi">
+                            </div>
+                        </div>
+                        
+                        <div class="buttons-group">
+                            <button id="extract-button">
+                                <i class="fas fa-unlock"></i> Ekstrak Pesan
+                            </button>
+                            <button id="clear-extract" class="secondary-button">
+                                <i class="fas fa-eraser"></i> Bersihkan
+                            </button>
+                        </div>
+                        
+                        <div id="extract-progress" class="progress-container" style="display: none;">
+                            <p>Sedang mengesktrak pesan...</p>
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="extract-result" class="result-container" style="display: none;">
+                    <h3><i class="fas fa-comment-alt"></i> Pesan yang Ditemukan:</h3>
+                    <div class="data-card">
+                        <div class="input-group">
+                            <textarea id="extracted-message" readonly></textarea>
+                        </div>
+                        <div class="buttons-group">
+                            <button id="copy-message">
+                                <i class="fas fa-copy"></i> Salin Pesan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Tab for Metadata Management -->
+            <div id="metadata" class="tab-content">
+                <h2>Kelola Metadata</h2>
+                <div class="stego-form">
+                    <div class="image-col">
+                        <div class="file-upload">
+                            <input type="file" id="metadata-file" accept="image/png, image/jpeg, audio/mp3, audio/ogg, video/mp4">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Pilih File untuk Kelola Metadata</p>
+                            <span>Format yang didukung: PNG, JPEG, MP3, MP4</span>
+                        </div>
+                        
+                        <div class="image-preview">
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <div class="data-col">
+                        <div class="data-card">
+                            <h3><i class="fas fa-wrench"></i> Opsi Metadata</h3>
+                            <div class="input-group">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="remove-gps" checked>
+                                    <label for="remove-gps">Hapus data lokasi (GPS)</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="remove-timestamps" checked>
+                                    <label for="remove-timestamps">Hapus tanggal & waktu</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="remove-device-info" checked>
+                                    <label for="remove-device-info">Hapus info perangkat</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="remove-all">
+                                    <label for="remove-all">Hapus semua metadata</label>
+                                </div>
+                                <div class="radio-group" style="margin-top: 15px;">
+                                    <p><b>Metode Privasi:</b></p>
+                                    <div>
+                                        <input type="radio" id="sanitize" name="method" value="sanitize" checked>
+                                        <label for="sanitize">Bersihkan (hapus metadata)</label>
+                                    </div>
+                                    <div>
+                                        <input type="radio" id="obscure" name="method" value="obscure">
+                                        <label for="obscure">Aburkan (sembunyikan metadata)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="buttons-group">
+                            <button id="process-metadata-button">
+                                <i class="fas fa-eye-slash"></i> Proses Metadata
+                            </button>
+                            <button id="clear-metadata" class="secondary-button">
+                                <i class="fas fa-eraser"></i> Bersihkan
+                            </button>
+                        </div>
+                        
+                        <div id="metadata-progress" class="progress-container" style="display: none;">
+                            <p>Sedang memproses metadata...</p>
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="metadata-result" class="result-container" style="display: none;">
+                    <h3><i class="fas fa-check-circle"></i> Metadata Berhasil Diproses!</h3>
+                    <div class="metadata-comparison">
+                        <div class="metadata-original">
+                            <h4>Metadata Asli</h4>
+                            <div class="data-card">
+                                <pre id="original-metadata"></pre>
+                            </div>
+                        </div>
+                        <div class="metadata-processed">
+                            <h4>Metadata Setelah Diproses</h4>
+                            <div class="data-card">
+                                <pre id="processed-metadata"></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image-preview">
+                        <img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Preview">
+                    </div>
+                    <div class="buttons-group">
+                        <a href="#" id="download-processed-file" class="download-link">
+                            <i class="fas fa-download"></i> Unduh File
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="about" class="tab-content">
+                <h2>Tentang Oblivio</h2>
+                <p>Oblivio adalah aplikasi yang dirancang untuk melindungi privasi pengguna dengan cara mengaburkan dan menyembunyikan metadata dalam berbagai jenis file digital.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3><i class="fas fa-question-circle"></i> Apa itu Metadata?</h3>
+                        <p>Metadata adalah informasi tersembunyi dalam file digital yang sering mengandung detail sensitif seperti lokasi pengambilan, nama pengguna, waktu pembuatan, atau informasi perangkat.</p>
+                        <p>Tanpa disadari, berbagi file digital juga berarti berbagi informasi pribadi Anda.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3><i class="fas fa-cogs"></i> Metode DCT</h3>
+                        <p>Oblivio menggunakan metode DCT (Discrete Cosine Transform) yang menyisipkan data pada koefisien frekuensi rendah media digital.</p>
+                        <p>Teknik ini sangat efektif karena perubahan pada koefisien tersebut tidak terdeteksi secara kasat mata, namun dapat menyimpan informasi dengan aman.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3><i class="fas fa-shield-alt"></i> Keamanan</h3>
+                        <p>Oblivio dilengkapi dengan enkripsi tambahan menggunakan password. Data sensitif akan dienkripsi terlebih dahulu sebelum disembunyikan.</p>
+                        <p>Kombinasi steganografi dan enkripsi membuat informasi Anda memiliki dua lapis perlindungan.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3><i class="fas fa-file-alt"></i> Format yang Didukung</h3>
+                        <p>Aplikasi ini mendukung berbagai format media digital:</p>
+                        <ul>
+                            <li>Gambar: PNG, JPEG (metadata XMP)</li>
+                            <li>Audio: MP3 (metadata ID3)</li>
+                            <li>Video: MP4 (container metadata)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3><i class="fas fa-laptop-code"></i> Cara Kerja</h3>
+                        <p>Oblivio bekerja dengan cara berikut:</p>
+                        <ol>
+                            <li>Ekstraksi metadata dari file digital</li>
+                            <li>Pengacakan atau penghapusan data sensitif</li>
+                            <li>Transformasi file ke domain frekuensi menggunakan DCT</li>
+                            <li>Penyembunyian metadata yang sudah diubah dalam struktur file</li>
+                            <li>Transformasi balik ke format asli</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h3><i class="fas fa-user-shield"></i> Privasi</h3>
+                        <p>Oblivio dirancang dengan mengutamakan privasi pengguna. Semua proses dilakukan di sisi klien dan server dengan aman, dan tidak ada data yang disimpan setelah sesi berakhir.</p>
+                        <p>Aplikasi ini ideal untuk jurnalis, aktivis, whistleblower, atau siapa pun yang menghargai privasi digital.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message"></span>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-logo">Oblivio</div>
+            <p>Solusi Privasi Digital untuk Perlindungan Data Sensitif</p>
+            
+            <div class="footer-links">
+                <a href="#">Panduan Pengguna</a>
+                <a href="#">Kebijakan Privasi</a>
+                <a href="#">FAQ</a>
+                <a href="#">Kontak</a>
+            </div>
+            
+            <div class="footer-copyright">
+                <p>&copy; 2025 Oblivio. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
